@@ -40,12 +40,34 @@ def schedule(division):
     return matches
 
 
-# def faltas(agresividad:str):
-#     match agresividad:
-#         case "blando":
-#             intensidad = [,]
-#     faltas = choices([True, False], [intensidad], k=1)
-#     if faltas[0]:
-#         nfaltas = randint(1,6)
-#         return nfaltas
-        
+def faltas(agresividad:str):
+    match agresividad:
+        case "blando":
+            mod = -5
+        case "normal":
+            mod = 0
+        case "intenso":
+            mod = 5
+    roll = randint(1,20)
+    result = roll+mod
+    print(result)
+    match (result):
+        case 15:
+            nfaltas = 1
+        case 16:
+            nfaltas = 2
+        case 17:
+            nfaltas = 3
+        case 18:
+            nfaltas = 4
+        case 19:
+            nfaltas = 5
+        case (result) if (result)>=20:
+            nfaltas = 6
+        case _:
+            nfaltas = 0
+    return nfaltas
+
+def asignarFaltas(listado:list, agresividad:str):
+    nfaltas = faltas()
+    choices([listado], k=nfaltas)

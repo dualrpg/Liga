@@ -1,6 +1,6 @@
 import sqlite3 as sql
 from ReadWriteGoogleSheet import readEquipos, readJugadores
-from partidos import matchup, schedule
+from partidos import matchup, schedule, faltas
 from utils import readCSV, clearName
 
 divisiones = ["Primera", "Segunda"]
@@ -47,7 +47,9 @@ def createTable():
             posicion2 text,
             media double,
             numero integer,
-            equipo text
+            equipo text,
+            amarillas int,
+            rojas int
         )        
         """
     )
@@ -76,7 +78,7 @@ def insertRowEquipos(nombre, dueño, division):
 def insertRowJugadores(nombre, nacionalidad, posicion1, posicion2, media, numero, equipo):
     conn = sql.connect("liga.db")
     cursor = conn.cursor()
-    instruccion = f"INSERT INTO jugadores VALUES ('{nombre}', '{nacionalidad}', '{posicion1}', '{posicion2}','{media}', '{numero}', '{equipo}')"
+    instruccion = f"INSERT INTO jugadores VALUES ('{nombre}', '{nacionalidad}', '{posicion1}', '{posicion2}','{media}', '{numero}', '{equipo}', 0, 0)"
     cursor.execute(instruccion)
     conn.commit()
     conn.close()
@@ -138,7 +140,9 @@ def listTeamDivision():
                 equipo1 text,
                 equipo2 text,
                 resultadoEquipo1 int,
-                resultadoEquipo2 int
+                resultadoEquipo2 int,
+                intesidadEquipo1,
+                intensidadEquipo2
             )  """
         )
         conn.commit()
@@ -155,7 +159,7 @@ def listTeamDivision():
         times = 0
         while times != 2:
             for teamsGame in scheduleList:
-                instruccion = f"INSERT INTO {temporadaDivision} VALUES ('{gameID}','{jornada}','{teamsGame[0]}','{teamsGame[1]}','','')"
+                instruccion = f"INSERT INTO {temporadaDivision} VALUES ('{gameID}','{jornada}','{teamsGame[0]}','{teamsGame[1]}','','','','')"
                 cursor.execute(instruccion)
                 conn.commit()
                 gameID += 1
@@ -210,14 +214,24 @@ def posiciones(file):
     conn.commit()
     conn.close()
 
+def listarJugadoresEquipo(equipo:str):
+    conn = sql.connect("liga.db")
+    cursor = conn.cursor()
+    instruccion = f"SELECT nombre FROM jugadores WHERE equipo='{equipo}'"
+    cursor.execute(instruccion)
+    listaJugadores = cursor.fetchall()
+    conn.close()
+    return listaJugadores
+
+
 if __name__ == "__main__":
     # createDB()
-    # createTable()
-    # insertRowDivisiones(divisiones)
-    # readInsertEquipos()
-    # readInsertJugadores()
-    # media()
-    # listTeamDivision()
-    # teamsDay(1)
+    createTable()
+    insertRowDivisiones(divisiones)
+    readInsertEquipos()
+    readInsertJugadores()
+    media()
+    listTeamDivision()
+    teamsDay(1)
     posiciones("posicionesPrimera.csv")
     posiciones("posicionesSegunda.csv")

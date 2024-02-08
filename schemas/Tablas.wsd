@@ -1,0 +1,91 @@
+@startuml tablas
+class divisiones {
+    division
+    ....
+    --
+    get_division()
+}
+class equipos {
+    nombre
+    ....
+    dueño
+    division
+    --
+    get_nombre()
+    get_dueño()
+    get_division()
+}
+class jugadores {
+    nombre
+    ....
+    media
+    posicion1
+    posicion2
+    equipo
+    amarillas
+    rojas
+    --
+    get_nombre()
+    get_posicion1()
+    get_posicion2()
+    get_equipo()
+    get_amarillas()
+    get_rojas()
+}
+class temporada{
+    id
+    ....
+    jornada
+    equipo1
+    equipo2
+    division
+    --
+    get_id()
+    get_jornada()
+    get_equipo1()
+    get_equipo2()
+    get_division()
+}
+class resultados{
+    id
+    ....
+    equipo1
+    equipo2
+    --
+    get_id()
+    get_equipo1()
+    get_equipo2()
+}
+class faltas {
+    id
+    jugador
+    amarillas
+    rojas
+    --
+    get_id()
+    get_jugador()
+    get_amarillas()
+    get_rojas()
+}
+class lesiones {
+    id
+    jugador
+    lesion
+    duracion
+    --
+    get_id()
+    get_jugador()
+    get_lesion()
+    get_duracion()
+}
+divisiones::division *-- equipos::division
+equipos::nombre *-- jugadores::equipo
+equipos::nombre *-- temporada::equipo1
+equipos::nombre *-- temporada::equipo2
+equipos::division *-- temporada::division
+temporada::id *-- faltas::id
+temporada::id *-- lesiones::id
+temporada::id *-- resultados::id
+jugadores::nombre *-- faltas::jugador
+jugadores::nombre *-- lesiones::jugador
+@enduml
