@@ -17,13 +17,19 @@ class control:
         cursor.executescript(instruccion)
         return cursor.fetchall()
     
-    def constructorRow(lista, tabla)->str:
+    def constructorInsert(lista, tabla)->str:
         instruccion = []
         for valores in lista:
             instruccion.append(control.generateInsert(tabla, **valores))
         instruccion = control.constructorInstrucciones(instruccion)
         return instruccion
-
+    
+    def constructorUpdate(lista, tabla, conditionColum, condition)->str:
+        instruccion = []
+        for valores in lista:
+            instruccion.append(control.generateUpdate(tabla, conditionColum, condition,**valores))
+        instruccion = control.constructorInstrucciones(instruccion)
+        return instruccion
 
     def constructorInstrucciones(s):
         construido = ""
@@ -40,6 +46,13 @@ class control:
             valores = valores + f"'{value}', "
         instruccion = f"INSERT INTO {tabla} VALUES ({valores[:-2]})"
         return instruccion
+
+    def generateUpdate(tabla, conditionColum, condition,**kwargs):
+        valores = ""
+        for key, value in kwargs.items():
+            valores = valores + "{0}={1}, ".format(key, value)
+        instruccion = f"UPDATE {tabla} SET {valores[:-2]} WHERE {conditionColum} LIKE '{condition}"
+        return instruccion
     
     
 
@@ -54,21 +67,21 @@ class divisiones:
 class equipos:
     def get_nombre():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT nombre FROM equipos"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_dueño():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT dueño FROM equipos"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_division():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT division FROM equipos"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
@@ -76,42 +89,42 @@ class equipos:
 class jugadores:
     def get_nombre():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT nombre FROM jugadores"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_posicion1():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT posicion1 FROM jugadores"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_posicion2():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT posicion2 FROM jugadores"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_equipo():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT equipo FROM jugadores"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_amarillas():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT amarillas FROM jugadores"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
     
     def get_rojas():
         conn, cursor = control.conn()
-        instruccion = f"SELECT FROM"
+        instruccion = f"SELECT rojas FROM jugadores"
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta
@@ -228,12 +241,6 @@ class lesiones:
     def get_duracion():
         conn, cursor = control.conn()
         instruccion = f"SELECT FROM"
-        consulta = control.fetch(cursor, instruccion)
-        control.closeConn(conn)
-        return consulta
-
-def consulta(conn, cursor, instruccion):
-        conn, cursor = control.conn()
         consulta = control.fetch(cursor, instruccion)
         control.closeConn(conn)
         return consulta

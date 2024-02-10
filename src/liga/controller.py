@@ -44,56 +44,33 @@ def insertRowDivisiones():
     control.closeConn(conn)
 
 
-def insertRowEquipos(nombre, dueño, division):
+def insertRowEquipos():
     conn, cursor = control.conn()
-    instruccion = control.constructorRow()
-    cursor.execute(instruccion)
+    equipos = indexEquipos()
+    instruccion = control.constructorRow(equipos, "equipos")
+    control.execute(cursor, instruccion)
     control.closeConn(conn)
 
 
-def insertRowJugadores(nombre, nacionalidad, posicion1, posicion2, media, numero, equipo):
+def insertRowJugadores():
     conn, cursor = control.conn()
-    instruccion = f"INSERT INTO jugadores VALUES ('{nombre}', '{nacionalidad}', '{posicion1}', '{posicion2}','{media}', '{numero}', '{equipo}', 0, 0)"
-    cursor.execute(instruccion)
+    jugadores = indexJugadores()
+    instruccion = control.constructorRow(jugadores, "jugadores")
+    control.execute(cursor, instruccion)
     control.closeConn(conn)
-
-def readInsertEquipos():
-    equipos = readEquipos()
-    indexed = {}
-    for equipo in equipos:
-        indexed["dueño"] = clearName(equipo[0])
-        indexed["nombre"] = clearName(equipo[1])
-        indexed["division"] = clearName(equipo[2])
-        insertRowEquipos(indexed)
-
-def readInsertJugadores():
-    jugadores = readJugadores()
-    indexed = {}
-    for jugador in jugadores:
-        indexed["nombre"] = clearName(jugador[0])
-        # indexed["nacionalidad"] = clearName(jugador[1])
-        indexed["nacionalidad"] = ""
-        # indexed["posicion"] = clearName(jugador[2])
-        indexed["posicion1"] = ""
-        indexed["posicion2"] = ""
-        indexed["media"] = jugador[1]
-        # indexed["numero"] = clearName(jugador[4])
-        indexed["numero"] = ""
-        indexed["equipo"] = clearName(jugador[2])
-        insertRowJugadores(indexed)
-
 
 def media():
     conn, cursor = control.conn()
     instruccion = f"SELECT equipo, AVG(media) as media_promedio FROM (SELECT equipo, media, ROW_NUMBER() OVER (PARTITION BY equipo ORDER BY media DESC) as ranking FROM jugadores ) AS jugadores_numerados WHERE ranking <= 18 GROUP BY equipo"
-    cursor.execute(instruccion)
-    medias = cursor.fetchall()
+    medias = control.execute(cursor, instruccion)
+    instruccion = []
     for media in medias:
         equipo = media[0]
         media = media[1]
-        instruccion = f"UPDATE equipos SET media={media} WHERE nombre LIKE '{equipo}'"
-        cursor.execute(instruccion)
-        control.closeConn(conn)
+        instruccion.append(f"UPDATE equipos SET media={media} WHERE nombre LIKE '{equipo}'")
+    instruccion = control.constructorInstrucciones(instruccion)
+    control.execute(instruccion)
+    control.closeConn(conn)
 
 def listTeamDivision():
     conn, cursor = control.conn()
