@@ -25,7 +25,17 @@ class statemets:
                         equipo text,
                         amarillas int,
                         rojas int
-                    )  
+                    ):
+                    CREATE TABLE IF NOT EXISTS temporada (
+                        id int,
+                        jornada text,
+                        equipo1 text,
+                        equipo2 text,
+                        resultadoEquipo1 int,
+                        resultadoEquipo2 int,
+                        intesidadEquipo1,
+                        intensidadEquipo2
+                    )
                     """ 
 
 def createDB():
