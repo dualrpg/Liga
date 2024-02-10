@@ -1,0 +1,39 @@
+@startuml lesiones
+:Se tira un D20;
+switch (agresividad)
+case (Blando)
+  :Menos 5 a la tirada;
+case (Normal)
+case (Agresivo)
+  :Más 5 a la tirada;
+endswitch
+switch (18 o más)
+case (Menos de 18)
+  :No hay lesiones;
+case (18)
+  :1 lesión;
+case (19)
+  :2 lesiones;
+case (20)
+  :3 lesiones;
+endswitch
+while (lesión por asignar)
+  :asignar a jiugador;
+endwhile
+while (gravedad)
+  :tirar dado de 3;
+  switch (resultado D3)
+  case (1)
+    :lesión leve 1-2 semanas;
+    :se tira un D2;
+  case (2)
+    :lesión media de 1-4 semanas;
+    :se tira un D4;
+  case (3)
+    :lesión grave de 1-10 semnas;
+    :se tira un D10;
+  endswitch
+end while
+:se cambian jugadores lesionados;
+stop
+@enduml

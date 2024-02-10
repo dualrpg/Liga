@@ -1,0 +1,41 @@
+@startuml Faltas
+start
+
+:Se tira un D20;
+switch (agresividad)
+case (Blando)
+  :Menos 5 a la tirada;
+case (Normal)
+case (Agresivo)
+  :Más 5 a la tirada;
+endswitch
+switch (15 o más)
+case (Menos de 15)
+  :No hay faltas;
+case (15)
+  :1 falta;
+case (16)
+  :2 faltas;
+case (17)
+  :3 faltas;
+case (18)
+  :4 faltas;
+case (19)
+  :5 faltas;
+case (20)
+  :6 faltas;
+endswitch
+while (faltas por asignar)
+  :asignar a jugador;
+endwhile
+if (doble amarilla)
+  -> si;
+else
+  -> no;
+  :Tarjeta roja;
+endif
+if (falta a portero)
+  :Se decide si es penalti;
+endif
+stop
+@enduml

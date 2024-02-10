@@ -1,0 +1,23 @@
+@startuml Goles
+start
+
+while (goles)
+    :decidir parte;
+endwhile
+while (goles por asignar)
+    if (penalti)
+        :Se asigna gol a jugadores ofensivos o capitán;
+    else
+        if (gol random)
+            :Se asigna jugador de alante;
+        else
+            :Se asigna a cualquier jugador;
+            if (gol en propia)
+                :Se asigna a jugador del equipo rival;
+            endif
+        endif
+        :se asigna asistencia al gol;
+    endif
+endwhile
+stop
+@enduml
