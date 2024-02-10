@@ -1,5 +1,7 @@
 import sqlite3 as sql
 
+class prueba:
+    divisiones = [{"division":"Primera"},{"division":"Segunda"}]
 
 class control:
     def conn():
@@ -11,9 +13,33 @@ class control:
         conn.commit()
         conn.close()
 
-    def fetch(cursor, instruccion):
-        cursor.execute(instruccion)
+    def execute(cursor, instruccion):
+        cursor.executescript(instruccion)
         return cursor.fetchall()
+    
+    def constructorRow(lista, tabla)->str:
+        instruccion = []
+        for valores in lista:
+            instruccion.append(control.generateInsert(tabla, **valores))
+        instruccion = control.constructorInstrucciones(instruccion)
+        return instruccion
+
+
+    def constructorInstrucciones(s):
+        construido = ""
+        if len(s) <= 1:
+            construido = s + ";"
+        else:
+            for string in s:
+                construido = construido + string + ";"
+            return construido
+    
+    def generateInsert(tabla, **kwargs):
+        valores = ""
+        for value in kwargs.values():
+            valores = valores + f"'{value}', "
+        instruccion = f"INSERT INTO {tabla} VALUES ({valores[:-2]})"
+        return instruccion
     
     
 
