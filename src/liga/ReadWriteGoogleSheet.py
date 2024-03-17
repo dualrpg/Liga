@@ -1,5 +1,5 @@
 import gspread
-from oauth2client.service_accountex import ServiceAccountCredentials
+from oauth2client.service_account import ServiceAccountCredentials
 from utils import clearName
 
 scope = [
@@ -8,6 +8,10 @@ scope = [
 ]
 
 creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scopes=scope)
+class archivos:
+    googleFile = "Jugadores new ina league"
+    sheetJugadores = "BD_Jugadores(No tocar)"
+    sheetEquipos = "BD_Equipos(No tocar)"
 
 def read(hoja):
     file = gspread.authorize(creds)
@@ -31,7 +35,9 @@ def indexJugadores():
         # indexed["numero"] = clearName(jugador[4])
         indexed["numero"] = ""
         indexed["equipo"] = clearName(jugador[2])
-        jugadoresIndexed.append(indexed)
+        indexed["amarillas"] = ""
+        indexed["rojas"] = ""
+        jugadoresIndexed.append(indexed.copy())
     return jugadoresIndexed
 
 def indexEquipos():
@@ -42,12 +48,8 @@ def indexEquipos():
         indexed["dueño"] = clearName(equipo[0])
         indexed["nombre"] = clearName(equipo[1])
         indexed["division"] = clearName(equipo[2])
-        equiposIndexed.append(indexed)
+        indexed["media"] = ""
+        equiposIndexed.append(indexed.copy())
     return equiposIndexed
 
-class archivos:
-    googleFile = "Jugadores new ina league"
-    sheetJugadores = "BD_Jugadores(No tocar)"
-    sheetEquipos = "BD_Equipos(No tocar)"
     
-print(indexEquipos())
