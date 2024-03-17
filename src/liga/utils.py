@@ -12,9 +12,15 @@ def readCSV(file):
     return jugadores
 
 def clearName(s:str):
-    translationTable = str.maketrans('', '', '1234567890()#')
+    translationTable = str.maketrans('', '', '1234567890()#[]')
     s = s.translate(translationTable).replace("'","''").strip()
     if s[-2:] == ' C':
         return s[:-1].strip()
     else:
         return s
+
+def clearOneValue(lista):
+    listado = []
+    for value in lista:
+        listado.append(value[0])
+    return listado
