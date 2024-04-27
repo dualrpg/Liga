@@ -1,6 +1,6 @@
 import sqlite3 as sql
 from ReadWriteGoogleSheet import indexJugadores, indexEquipos
-from partidos import schedule, faltas, lesiones, schedule, goles
+from partidos import schedule, faltas, lesiones, goles
 from utils import readCSV, clearName, clearOneValue
 from consultas import control, divisiones, equipos
 
@@ -65,7 +65,8 @@ class statemets:
                     CREATE TABLE IF NOT EXISTS goles(
                         id int,
                         jugador text,
-                        minuto int
+                        minuto int,
+                        propia text
                     )
                     """
     selectMedias = """SELECT equipo, AVG(media) as media_promedio FROM (SELECT equipo, media, ROW_NUMBER() OVER (PARTITION BY equipo ORDER BY media DESC) as ranking FROM jugadores ) AS jugadores_numerados WHERE ranking <= 18 GROUP BY equipo;"""
@@ -266,8 +267,7 @@ def insertAsignarFaltas(id_partido, intensidad):
     equiposPartido = control.execute(cursor, select)
     for equipo in equiposPartido[0]:
         jugadores = f"SELECT jugador FROM '{equipo}' WHERE entrada >= 0"
-        lista = control.execute(cursor, clearName(jugadores))
-        print(lista)
+        lista = control.execute(cursor, jugadores)
         cleanList = clearOneValue(lista)
         faltasList = faltas.asignarFaltas(id_partido, cleanList, intensidad)
         if not faltasList:
@@ -286,7 +286,6 @@ def insert_asignar_lesiones(id_partido, intensidad):
         lista = control.execute(cursor, jugadores)
         cleanList = clearOneValue(lista)
         lista_lesiones = lesiones.asignarLesiones(id_partido, cleanList, intensidad)
-        print(lista_lesiones)
         instruccion = control.constructorInsert(lista_lesiones, "lesiones")
         cursor.executescript(instruccion)
     control.closeConn(conn)
@@ -322,24 +321,25 @@ def insert_asignar_goles(id_partido):
     lista_goleadores = goles.asignar_goles(
         id_partido, listado_equipos, listado_equipos_ofensivo, equiposResultados
     )
+    print(lista_goleadores)
     instruccion = control.constructorInsert(lista_goleadores, "goles")
     cursor.executescript(instruccion)
     control.closeConn(conn)
 
 
 if __name__ == "__main__":
-    createDB()
-    createTables()
-    insertRowDivisiones()
-    insertEquipos()
-    insertJugadores()
-    media()
-    listTeamDivision()
-    teamsDay(1)
-    posiciones("posicionesPrimera.csv")
-    posiciones("posicionesSegunda.csv")
-    createTablesEquipos()
-    insertTablesEquipos()
-    insertAsignarFaltas(0, "normal")
-    insert_asignar_lesiones(0, "normal")
-    insert_asignar_goles(0)
+    # createDB()
+    # createTables()
+    # insertRowDivisiones()
+    # insertEquipos()
+    # insertJugadores()
+    # media()
+    # listTeamDivision()
+    # teamsDay(1)
+    # posiciones("posicionesPrimera.csv")
+    # posiciones("posicionesSegunda.csv")
+    # createTablesEquipos()
+    # insertTablesEquipos()
+    # insertAsignarFaltas(0, "normal")
+    # insert_asignar_lesiones(0, "normal")
+    insert_asignar_goles(2)
