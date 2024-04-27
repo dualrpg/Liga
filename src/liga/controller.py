@@ -4,8 +4,9 @@ from partidos import schedule, faltas, lesiones, schedule, goles
 from utils import readCSV, clearName, clearOneValue
 from consultas import control, divisiones, equipos
 
+
 class statemets:
-    divisiones = [{"division":"Primera"},{"division":"Segunda"}]
+    divisiones = [{"division": "Primera"}, {"division": "Segunda"}]
     tablesBase = """DROP TABLE IF EXISTS divisiones;
                     DROP TABLE IF EXISTS equipos;
                     DROP TABLE IF EXISTS jugadores;
@@ -70,7 +71,7 @@ class statemets:
     selectMedias = """SELECT equipo, AVG(media) as media_promedio FROM (SELECT equipo, media, ROW_NUMBER() OVER (PARTITION BY equipo ORDER BY media DESC) as ranking FROM jugadores ) AS jugadores_numerados WHERE ranking <= 18 GROUP BY equipo;"""
 
     def equipos(tabla):
-        table = F"""DROP TABLE IF EXISTS '{tabla}';
+        table = f"""DROP TABLE IF EXISTS '{tabla}';
                     CREATE TABLE IF NOT EXISTS '{tabla}' (
                         jugador text,
                         posicion text,
@@ -79,14 +80,17 @@ class statemets:
                     )"""
         return table
 
+
 def createDB():
     conn = sql.connect("liga.db")
     control.closeConn(conn)
+
 
 def createTables():
     conn, cursor = control.conn()
     cursor.executescript(statemets.tablesBase)
     control.closeConn(conn)
+
 
 def createTablesEquipos():
     equiposList = equipos.get_nombre()
@@ -99,11 +103,13 @@ def createTablesEquipos():
     cursor.executescript(instruccion)
     control.closeConn(conn)
 
+
 def insertRowDivisiones():
     conn, cursor = control.conn()
     instruccion = control.constructorInsert(statemets.divisiones, "divisiones")
     cursor.executescript(instruccion)
     control.closeConn(conn)
+
 
 def insertEquipos():
     conn, cursor = control.conn()
@@ -112,29 +118,40 @@ def insertEquipos():
     cursor.executescript(instruccion)
     control.closeConn(conn)
 
+
 def insertTablesEquipos():
     equiposList = equipos.get_nombre()
     conn, cursor = control.conn()
     valuesList = []
     instruccionEquipo = []
+    propia = [{"jugador": "Propia", "posicion": "N", "entrada": 0, "salida": 0}]
     for equipo in equiposList:
+        insert_propia = control.constructorInsert(propia, equipo[0])
+        control.execute(cursor, insert_propia)
         select = f"SELECT nombre, posicion1 FROM jugadores WHERE equipo='{equipo[0]}'"
         listaJugadores = control.execute(cursor, select)
         for jugador, posicion in listaJugadores:
-            values = {"jugador":clearName(jugador), "posicion":posicion, "entrada":0, "salida":0}
+            values = {
+                "jugador": clearName(jugador),
+                "posicion": posicion,
+                "entrada": 0,
+                "salida": 0,
+            }
             valuesList.append(values.copy())
         instruccionEquipo.append(control.constructorInsert(valuesList, equipo[0]))
         valuesList.clear()
     instruccion = control.constructorInstrucciones(instruccionEquipo)
     cursor.executescript(instruccion)
     control.closeConn(conn)
-    
+
+
 def insertJugadores():
     conn, cursor = control.conn()
     jugadores = indexJugadores()
     instruccion = control.constructorInsert(jugadores, "jugadores")
     cursor.executescript(instruccion)
     control.closeConn(conn)
+
 
 def media():
     conn, cursor = control.conn()
@@ -149,6 +166,7 @@ def media():
     instruccion = control.constructorInstrucciones(instructionList)
     cursor.executescript(instruccion)
     control.closeConn(conn)
+
 
 def listTeamDivision():
     divisionesList = divisiones.get_division()
@@ -168,7 +186,13 @@ def listTeamDivision():
         scheduleList = schedule.schedule_matches(teamList)
         while times != 2:
             for teamsGame in scheduleList:
-                values = {"id":gameID, "jornada":jornada,"equipo1":teamsGame[0],"equipo2":teamsGame[1],"division":division[0]}
+                values = {
+                    "id": gameID,
+                    "jornada": jornada,
+                    "equipo1": teamsGame[0],
+                    "equipo2": teamsGame[1],
+                    "division": division[0],
+                }
                 valuesList.append(values.copy())
                 instruccion = control.generateInsert("temporada", **values)
                 instruccionList.append(instruccion)
@@ -181,6 +205,7 @@ def listTeamDivision():
     instruccionScript = control.constructorInstrucciones(instruccionList)
     cursor.executescript(instruccionScript)
     control.closeConn(conn)
+
 
 def teamsDay(jornada):
     conn, cursor = control.conn()
@@ -208,6 +233,7 @@ def teamsDay(jornada):
             teamMatch.clear()
     control.closeConn(conn)
 
+
 def posiciones(file):
     jugadores = readCSV(file)
     conn, cursor = control.conn()
@@ -215,14 +241,17 @@ def posiciones(file):
         posiciones = jugador[0]
         nombre = clearName(jugador[1])
         i = 1
-        for posicion in posiciones.split('/'):
+        for posicion in posiciones.split("/"):
             colum = f"posicion{i}"
-            instruccion = f"UPDATE jugadores SET {colum}='{posicion}' WHERE nombre='{nombre}'"
+            instruccion = (
+                f"UPDATE jugadores SET {colum}='{posicion}' WHERE nombre='{nombre}'"
+            )
             i += 1
             cursor.execute(instruccion)
     control.closeConn(conn)
 
-def listarJugadoresEquipo(equipo:str):
+
+def listarJugadoresEquipo(equipo: str):
     conn, cursor = control.conn()
     instruccion = f"SELECT nombre FROM jugadores WHERE equipo='{equipo}'"
     cursor.execute(instruccion)
@@ -230,32 +259,38 @@ def listarJugadoresEquipo(equipo:str):
     conn.close()
     return listaJugadores
 
+
 def insertAsignarFaltas(id_partido, intensidad):
     conn, cursor = control.conn()
     select = f"SELECT equipo1, equipo2 FROM temporada WHERE id='{id_partido}'"
     equiposPartido = control.execute(cursor, select)
     for equipo in equiposPartido[0]:
-        jugadores = f"SELECT jugador FROM '{equipo}' WHERE entrada >= 0" 
-        lista =  control.execute(cursor, jugadores)
+        jugadores = f"SELECT jugador FROM '{equipo}' WHERE entrada >= 0"
+        lista = control.execute(cursor, clearName(jugadores))
+        print(lista)
         cleanList = clearOneValue(lista)
         faltasList = faltas.asignarFaltas(id_partido, cleanList, intensidad)
+        if not faltasList:
+            continue
         instruccion = control.constructorInsert(faltasList, "faltas")
         cursor.executescript(instruccion)
     control.closeConn(conn)
+
 
 def insert_asignar_lesiones(id_partido, intensidad):
     conn, cursor = control.conn()
     select = f"SELECT equipo1, equipo2 FROM temporada WHERE id='{id_partido}'"
     equiposPartido = control.execute(cursor, select)
     for equipo in equiposPartido[0]:
-        jugadores = f"SELECT jugador FROM '{equipo}' WHERE entrada >= 0" 
-        lista =  control.execute(cursor, jugadores)
+        jugadores = f"SELECT jugador FROM '{equipo}' WHERE entrada >= 0"
+        lista = control.execute(cursor, jugadores)
         cleanList = clearOneValue(lista)
         lista_lesiones = lesiones.asignarLesiones(id_partido, cleanList, intensidad)
         print(lista_lesiones)
         instruccion = control.constructorInsert(lista_lesiones, "lesiones")
         cursor.executescript(instruccion)
     control.closeConn(conn)
+
 
 def insert_asignar_goles(id_partido):
     conn, cursor = control.conn()
@@ -271,33 +306,40 @@ def insert_asignar_goles(id_partido):
     equipo1 = equiposPartido[0][:2]
     equipo2 = equiposPartido[0][-2:]
     equiposResultados = [equipo1, equipo2]
+    listado_equipos = []
+    listado_equipos_ofensivo = []
     for equipo in equiposResultados:
-        jugadores = f"SELECT jugador, posicion, entrada, salida FROM '{equipo[0]}' WHERE entrada >= 0" 
-        lista_jugadores =  control.execute(cursor, jugadores)
+        jugadores = f"SELECT jugador, posicion, entrada, salida FROM '{equipo[0]}' WHERE entrada >= 0"
+        lista_jugadores = control.execute(cursor, jugadores)
+        listado_equipos.append(lista_jugadores)
         jugadores = f"""SELECT jugador, posicion, entrada, salida 
                         FROM '{equipo[0]}' 
                         WHERE entrada >= 0 
                         AND posicion LIKE 'DC'
                         OR posicion LIKE 'MC'"""
         lista_jugadores_ofensivos = control.execute(cursor, jugadores)
-        lista_goleadores = goles.asignar_goles(id_partido, lista_jugadores, lista_jugadores_ofensivos, equipo[1])
-        instruccion = control.constructorInsert(lista_goleadores, "goles")
-        cursor.executescript(instruccion)
+        listado_equipos_ofensivo.append(lista_jugadores_ofensivos)
+    lista_goleadores = goles.asignar_goles(
+        id_partido, listado_equipos, listado_equipos_ofensivo, equiposResultados
+    )
+    instruccion = control.constructorInsert(lista_goleadores, "goles")
+    cursor.executescript(instruccion)
     control.closeConn(conn)
 
+
 if __name__ == "__main__":
-    # createDB()
-    # createTables()
-    # insertRowDivisiones()
-    # insertEquipos()
-    # insertJugadores()
-    # media()
-    # listTeamDivision()
-    # teamsDay(1)
-    # posiciones("posicionesPrimera.csv")
-    # posiciones("posicionesSegunda.csv")
-    # createTablesEquipos()
-    # insertTablesEquipos()
-    # insertAsignarFaltas(0, "normal")
-    # insert_asignar_lesiones(0, "normal")
+    createDB()
+    createTables()
+    insertRowDivisiones()
+    insertEquipos()
+    insertJugadores()
+    media()
+    listTeamDivision()
+    teamsDay(1)
+    posiciones("posicionesPrimera.csv")
+    posiciones("posicionesSegunda.csv")
+    createTablesEquipos()
+    insertTablesEquipos()
+    insertAsignarFaltas(0, "normal")
+    insert_asignar_lesiones(0, "normal")
     insert_asignar_goles(0)

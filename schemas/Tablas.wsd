@@ -70,13 +70,23 @@ class faltas {
 class lesiones {
     id
     jugador
-    lesion
+    gravedad
     duracion
     --
     get_id()
     get_jugador()
-    get_lesion()
+    get_gravedad()
     get_duracion()
+}
+class intensidad{
+    id
+    ....
+    equipo1
+    equipo2
+    --
+    get_id()
+    get_equipo1()
+    get_equipo2()
 }
 divisiones::division *-- equipos::division
 equipos::nombre *-- jugadores::equipo
@@ -88,4 +98,5 @@ temporada::id *-- lesiones::id
 temporada::id *-- resultados::id
 jugadores::nombre *-- faltas::jugador
 jugadores::nombre *-- lesiones::jugador
+temporada::id *-- intensidad::id
 @enduml

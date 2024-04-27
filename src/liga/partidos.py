@@ -15,18 +15,27 @@ class goles:
         resultado_final = [estructura_final]
         return resultado_final
 
-    def asignar_goles(id_partido, listado, listado_ofensivos, n_goles):
-        i = 0
+    def asignar_goles(id_partido, listado_gol_random, listado_ofensivos, n_goles):
+        j = 0
         jugadores = []
-        while i < n_goles:
-            d20 = randint(1,20)
-            if d20 >= 18:
-                jugadores.append(choices(listado, k=1)[0])
-            else:
-                jugadores.append(choices(listado_ofensivos, k=1)[0])
-            i += 1
+        while j < 2:
+            i = 0
+            while i < n_goles[j][1]:
+                d20 = randint(1,20)
+                if d20 >= 18:
+                    choice = choices(listado_gol_random[j], k=1)
+                    if choice[0][0] == "Propia":
+                        if j == 0:
+                            jugadores.append(choices(listado_gol_random[j+1], k=1)[0])
+                        elif j == 1:
+                            jugadores.append(choices(listado_gol_random[j-1], k=1)[0])
+                    else:
+                        jugadores.append(choices(listado_gol_random[j], k=1)[0])
+                else:
+                    jugadores.append(choices(listado_ofensivos[j], k=1)[0])
+                i += 1
+            j += 1
         index = {}
-        print(jugadores)
         valuesList = []
         for jugador in jugadores:
             minuto = randint(jugador[2], jugador[3])
@@ -88,6 +97,8 @@ class faltas:
 
     def asignarFaltas(id_partido, listado:list, intensidad):
         nfaltas = faltas.calcFaltas(intensidad)
+        if nfaltas == 0:
+            return []
         jugadores = choices(listado, k=nfaltas)
         count = Counter(jugadores)
         check = False
