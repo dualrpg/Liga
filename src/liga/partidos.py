@@ -4,7 +4,10 @@ from utils import clearName
 
 
 class goles:
-    def matchup(matchUp, id_partido):
+    def __init__(self) -> None:
+        pass
+
+    def matchup(self, matchUp, id_partido):
         team1 = matchUp[0]
         team2 = matchUp[1]
         results = choices(
@@ -19,7 +22,7 @@ class goles:
         resultado_final = [estructura_final]
         return resultado_final
 
-    def asignar_goles(id_partido, listado_gol_random, listado_ofensivos, n_goles):
+    def asignar_goles(self, id_partido, listado_gol_random, listado_ofensivos, n_goles):
         j = 0
         jugador = []
         index = {}
@@ -53,7 +56,10 @@ class goles:
 
 
 class schedule:
-    def createSchedule(listado):
+    def __init__(self) -> None:
+        pass
+
+    def createSchedule(self, listado):
         """Create a schedule for the teams in the list and return it"""
         s = []
         shuffle(listado)
@@ -77,16 +83,19 @@ class schedule:
 
         return s
 
-    def schedule_matches(division):
+    def schedule_matches(self, division):
         matches = []
-        for round in schedule.createSchedule(division):
+        for round in self.createSchedule(division):
             for match in round:
                 matches.append(match)
         return matches
 
 
 class faltas:
-    def calcFaltas(agresividad: str):
+    def __init__(self) -> None:
+        pass
+
+    def calcFaltas(self, agresividad: str):
         match agresividad:
             case "blando":
                 mod = -5
@@ -94,6 +103,8 @@ class faltas:
                 mod = 0
             case "intenso":
                 mod = 5
+            case _:
+                mod = 0
         roll = randint(1, 20)
         result = roll + mod
         nfaltas = result - 14
@@ -103,8 +114,8 @@ class faltas:
             nfaltas = 6
         return nfaltas
 
-    def asignarFaltas(id_partido, listado: list, intensidad):
-        nfaltas = faltas.calcFaltas(intensidad)
+    def asignarFaltas(self, id_partido, listado: list, intensidad):
+        nfaltas = self.calcFaltas(intensidad)
         if nfaltas == 0:
             return []
         jugadores = choices(listado, k=nfaltas)
@@ -131,7 +142,10 @@ class faltas:
 
 
 class lesiones:
-    def calc_lesiones(agresividad: str):
+    def __init__(self) -> None:
+        pass
+
+    def calc_lesiones(self, agresividad: str):
         match agresividad:
             case "blando":
                 mod = -5
@@ -139,6 +153,8 @@ class lesiones:
                 mod = 0
             case "intenso":
                 mod = 5
+            case _:
+                mod = 0
         roll = randint(1, 20)
         result = roll + mod
         result = 20
@@ -149,8 +165,8 @@ class lesiones:
             n_lesiones = 3
         return n_lesiones
 
-    def asignarLesiones(id_partido, listado: list, intensidad):
-        n_lesiones = lesiones.calc_lesiones(intensidad)
+    def asignarLesiones(self, id_partido, listado: list, intensidad):
+        n_lesiones = self.calc_lesiones(intensidad)
         jugadores = choices(listado, k=n_lesiones)
         count = Counter(jugadores)
         index = {}

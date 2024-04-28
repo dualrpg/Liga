@@ -1,17 +1,23 @@
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials  # type: ignore
+import gspread  # type: ignore
 from utils import clearName
 
+
 scope = [
-    'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/drive'
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scopes=scope)
+creds = Credentials.from_service_account_file("credentials.json", scopes=scope)
+
+gc = gspread.service_account(filename="credentials.json")
+
+
 class archivos:
     googleFile = "Jugadores new ina league"
     sheetJugadores = "BD_Jugadores(No tocar)"
     sheetEquipos = "BD_Equipos(No tocar)"
+
 
 def read(hoja):
     file = gspread.authorize(creds)
@@ -19,6 +25,7 @@ def read(hoja):
     sheet = workbook.worksheet(hoja)
     collection = sheet.get_all_values()
     return collection
+
 
 def indexJugadores():
     collection = read(archivos.sheetJugadores)
@@ -40,6 +47,7 @@ def indexJugadores():
         jugadoresIndexed.append(indexed.copy())
     return jugadoresIndexed
 
+
 def indexEquipos():
     collection = read(archivos.sheetEquipos)
     equiposIndexed = []
@@ -51,5 +59,3 @@ def indexEquipos():
         indexed["media"] = ""
         equiposIndexed.append(indexed.copy())
     return equiposIndexed
-
-    

@@ -1,95 +1,28 @@
-import sqlite3 as sql
 from ReadWriteGoogleSheet import indexJugadores, indexEquipos
-from partidos import schedule, faltas, lesiones, goles
+import partidos
 from utils import readCSV, clearName, clearOneValue
-from consultas import control, divisiones, equipos
+import consultas
+import getters
+import tables
 
-
-class statemets:
-    divisiones = [{"division": "Primera"}, {"division": "Segunda"}]
-    tablesBase = """DROP TABLE IF EXISTS divisiones;
-                    DROP TABLE IF EXISTS equipos;
-                    DROP TABLE IF EXISTS jugadores;
-                    DROP TABLE IF EXISTS temporada;
-                    DROP TABLE IF EXISTS resultados;
-                    DROP TABLE IF EXISTS goles;
-                    CREATE TABLE IF NOT EXISTS divisiones (
-                        division text
-                    );
-                    CREATE TABLE IF NOT EXISTS equipos (
-                        dueño text,
-                        nombre text,
-                        division text,
-                        media int
-                    );
-                    CREATE TABLE IF NOT EXISTS jugadores (
-                        nombre text,
-                        nacionalidad text,
-                        posicion1 text,
-                        posicion2 text,
-                        media double,
-                        numero integer,
-                        equipo text,
-                        amarillas int,
-                        rojas int
-                    );
-                    CREATE TABLE IF NOT EXISTS temporada (
-                        id int,
-                        jornada text,
-                        equipo1 text,
-                        equipo2 text,
-                        division text
-                    );
-                    CREATE TABLE IF NOT EXISTS resultados (
-                        id int,
-                        equipo1 int,
-                        equipo2 int
-                    );
-                    CREATE TABLE IF NOT EXISTS lesiones (
-                        id int,
-                        jugador text,
-                        gravedad text,
-                        duracion int
-                    );
-                    CREATE TABLE IF NOT EXISTS faltas (
-                        id int,
-                        jugador text,
-                        amarillas text,
-                        rojas text
-                    );
-                    CREATE TABLE IF NOT EXISTS intensidad (
-                        id int,
-                        equipo1 text,
-                        equipo2 text
-                    );
-                    CREATE TABLE IF NOT EXISTS goles(
-                        id int,
-                        jugador text,
-                        minuto int,
-                        propia text
-                    )
-                    """
-    selectMedias = """SELECT equipo, AVG(media) as media_promedio FROM (SELECT equipo, media, ROW_NUMBER() OVER (PARTITION BY equipo ORDER BY media DESC) as ranking FROM jugadores ) AS jugadores_numerados WHERE ranking <= 18 GROUP BY equipo;"""
-
-    def equipos(tabla):
-        table = f"""DROP TABLE IF EXISTS '{tabla}';
-                    CREATE TABLE IF NOT EXISTS '{tabla}' (
-                        jugador text,
-                        posicion text,
-                        entrada int,
-                        salida int
-                    )"""
-        return table
+divisiones = getters.divisiones()
+equipos = getters.equipos()
+schedule = partidos.schedule()
+faltas = partidos.faltas()
+lesiones = partidos.lesiones()
+goles = partidos.goles()
+control = consultas.control()
+statements = tables.statements()
 
 
 def createDB():
-    conn = sql.connect("liga.db")
+    conn, _ = control.conn()
     control.closeConn(conn)
 
 
 def createTables():
     conn, cursor = control.conn()
-    cursor.executescript(statemets.tablesBase)
+    cursor.executescript(statements.tablesBase)
     control.closeConn(conn)
 
 
@@ -98,7 +31,7 @@ def createTablesEquipos():
     conn, cursor = control.conn()
     tableList = []
     for equipo in equiposList:
-        tabla = statemets.equipos(equipo[0])
+        tabla = statements.equipos(equipo[0])
         tableList.append(tabla)
     instruccion = control.constructorInstrucciones(tableList)
     cursor.executescript(instruccion)
@@ -107,7 +40,7 @@ def createTablesEquipos():
 
 def insertRowDivisiones():
     conn, cursor = control.conn()
-    instruccion = control.constructorInsert(statemets.divisiones, "divisiones")
+    instruccion = control.constructorInsert(statements.divisiones, "divisiones")
     cursor.executescript(instruccion)
     control.closeConn(conn)
 
@@ -156,7 +89,7 @@ def insertJugadores():
 
 def media():
     conn, cursor = control.conn()
-    selMedias = statemets.selectMedias
+    selMedias = statements.selectMedias
     medias = control.execute(cursor, selMedias)
     instructionList = []
     for media in medias:
@@ -328,18 +261,18 @@ def insert_asignar_goles(id_partido):
 
 
 if __name__ == "__main__":
-    # createDB()
-    # createTables()
-    # insertRowDivisiones()
-    # insertEquipos()
-    # insertJugadores()
-    # media()
-    # listTeamDivision()
-    # teamsDay(1)
-    # posiciones("posicionesPrimera.csv")
-    # posiciones("posicionesSegunda.csv")
-    # createTablesEquipos()
-    # insertTablesEquipos()
-    # insertAsignarFaltas(0, "normal")
-    # insert_asignar_lesiones(0, "normal")
-    insert_asignar_goles(2)
+    createDB()
+    createTables()
+    insertRowDivisiones()
+    insertEquipos()
+    insertJugadores()
+    media()
+    listTeamDivision()
+    teamsDay(1)
+    posiciones("posicionesPrimera.csv")
+    posiciones("posicionesSegunda.csv")
+    createTablesEquipos()
+    insertTablesEquipos()
+    insertAsignarFaltas(0, "normal")
+    insert_asignar_lesiones(0, "normal")
+    insert_asignar_goles(0)
