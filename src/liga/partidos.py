@@ -31,6 +31,9 @@ class goles:
             i = 0
             while i < n_goles[j][1]:
                 d20 = randint(1, 20)
+                index["id_partido"] = -1
+                index["nombre"] = ""
+                index["minuto"] = -1
                 index["Propia"] = ""
                 if d20 >= 18:
                     choice = choices(listado_gol_random[j], k=1)
@@ -67,7 +70,6 @@ class schedule:
             listado = listado + ["BYE"]
 
         for i in range(len(listado) - 1):
-
             mid = int(len(listado) / 2)
             l1 = listado[:mid]
             l2 = listado[mid:]
@@ -157,7 +159,6 @@ class lesiones:
                 mod = 0
         roll = randint(1, 20)
         result = roll + mod
-        result = 20
         n_lesiones = result - 17
         if n_lesiones < 0:
             n_lesiones = 0
