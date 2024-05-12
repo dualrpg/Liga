@@ -1,0 +1,25 @@
+Esto son los criterios para definir las cosas en los partidos.
+Sanciones:
+Se tirará un dado 20, si sale 15 o superior habrá tarjetas.
+Siendo 15 una tarjeta, y por cada número que sube se le suma otra.
+Siendo 20, 6 tarjetas, de las cuales, si no sale doble amarilla en esas 6, habrá una roja (se tira un dado 6 para elegir cual es la roja de las 6).
+Lesiones, 18 o superior lesión:
+18: una lesión
+19: dos lesiones
+20: tres lesiones
+Se tira un dado 3 para la gravedad.
+Sale 1: lesión leve 1-2 semanas (se tira un D2 para ver si es uno o dos)
+Sale 2: lesion media 1-4 semanas, (se tira un D4).
+Sale 3: lesión grave 1-10 semanas (se tira un D10).
+Si un club juega blando, a los dados de ese equipo se le resta 5. (Si has sacado 19 para tarjetas, se le quita 5 y se queda en 14, sin tarjetas).
+Si juega agresivo, a los dados de tarjetas del que juega agresivo y a los de lesión del rival se les suma 5. (Sale 13 en tarjetas o lesión, pasa a 18, hay tarjetas o lesión del  rival). 
+Goles
+Según el número de goles se tirarán dados de 20 para ver los minutos.
+Siendo del 1 al 10 la primera parte y del 11 al 20 la segunda.
+Para decidir quien marca:
+Primero se tira para gol ramdom un dado 20, si sale 18 a 20, el gol lo pueden meter cualquiera de los 11 jugadores o en propia, (se tira dado 12, si sale 12 es en propia y se tira de nuevo un dado 11 para ver que rival se mete en propia), si sale 17 o menos, generalmente tiro dado según los jugadores ofensivos que tiene cada club en el campo, por lo general suele ser dados entre 3 y 5.
+Las asistencias suelen ser un dado 11.
+Si hay tarjeta a un portero o defensa, queda a libertad de quién lo haga elegir si fue por un penalti, en cuyo caso, se tira dado por los posibles jugadores ofensivos + el capitán si no es uno de esos. 
+Los cambios generalmente muchos ya ponemos el minuto, sino lo ponen, los minutos los suelo elegir a dedo, pero suelo elegir al descanso, en el min 60, min 70, min 75 o min 80.
+Los cambios no es obligatorios ponerlos, pero si tenerlos en cuenta. 
+Y creo que todo listo, estos suelen ser los criterios que uso, si creéis que falta alguno, o tenéis dudas, no dudéis en preguntar.
