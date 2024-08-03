@@ -1,4 +1,4 @@
-from consultas import control
+from src.liga.consultas import control
 
 ctrl = control()
 
@@ -219,7 +219,7 @@ class resultados:
     def get_resultados_jornada(self, division, n):
         conn, cursor = ctrl.conn()
         instruccion = f"""SELECT resultados.id, temporada.equipo1, 
-        resultados.equipo1, temporada.equipo2, resultados.equipo2 
+        resultados.equipo1, resultados.equipo2, temporada.equipo2 
         FROM resultados INNER JOIN temporada 
         ON temporada.id = resultados.id 
         WHERE temporada.division LIKE '{division}' AND jornada = {n};"""

@@ -1,9 +1,9 @@
-from ReadWriteGoogleSheet import indexJugadores, indexEquipos
-import partidos
-from utils import readCSV, clearName
-import consultas
-import getters
-import tables
+from src.liga.ReadWriteGoogleSheet import indexJugadores, indexEquipos
+import src.liga.partidos as partidos
+from src.liga.utils import readCSV, clearName
+import src.liga.consultas as consultas
+import src.liga.getters as getters
+import src.liga.tables as tables
 
 
 class Base:
@@ -20,8 +20,8 @@ class Base:
         self.createTables()
         self.insertRowDivisiones()
         self.insertJugadores()
-        self.posiciones("posicionesPrimera.csv")
-        self.posiciones("posicionesSegunda.csv")
+        self.posiciones("src/liga/posicionesPrimera.csv")
+        self.posiciones("src/liga/posicionesSegunda.csv")
         self.insertEquipos()
         self.createTablesEquipos()
         self.insertTablesEquipos()
@@ -166,6 +166,3 @@ class Base:
                 i += 1
                 cursor.execute(instruccion)
         self.control.closeConn(conn)
-
-
-Base()

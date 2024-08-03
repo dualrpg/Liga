@@ -1,8 +1,8 @@
-import partidos
-from utils import clearOneValue
-import consultas
-import getters
-import tables
+from src.liga.utils import clearOneValue
+import src.liga.partidos as partidos
+import src.liga.consultas as consultas
+import src.liga.getters as getters
+import src.liga.tables as tables
 
 
 class acciones:

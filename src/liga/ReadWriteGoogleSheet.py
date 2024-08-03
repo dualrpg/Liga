@@ -1,16 +1,17 @@
 from google.oauth2.service_account import Credentials  # type: ignore
 import gspread  # type: ignore
-from utils import clearName
+from src.liga.utils import clearName
 
+path = "src/liga/"
 
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
 ]
 
-creds = Credentials.from_service_account_file("credentials.json", scopes=scope)
+creds = Credentials.from_service_account_file(f"{path}credentials.json", scopes=scope)
 
-gc = gspread.service_account(filename="credentials.json")
+gc = gspread.service_account(filename=f"{path}credentials.json")
 
 
 class archivos:

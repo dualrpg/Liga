@@ -2,7 +2,7 @@ class statements:
     def __init__(self) -> None:
         pass
 
-    divisiones = [{"division": "Primera"}, {"division": "Segunda"}]
+    divisiones = [{"division": "primera"}, {"division": "segunda"}]
     tablesBase = """DROP TABLE IF EXISTS divisiones;
                     DROP TABLE IF EXISTS equipos;
                     DROP TABLE IF EXISTS jugadores;
@@ -64,7 +64,8 @@ class statements:
                         id int,
                         jugador text,
                         minuto int,
-                        propia text
+                        propia text,
+                        asistencia text
                     )
                     """
     selectMedias = """SELECT equipo, AVG(media) as media_promedio FROM (SELECT equipo, media, ROW_NUMBER() OVER (PARTITION BY equipo ORDER BY media DESC) as ranking FROM jugadores ) AS jugadores_numerados WHERE ranking <= 18 GROUP BY equipo;"""

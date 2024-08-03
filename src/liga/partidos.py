@@ -1,6 +1,6 @@
 from random import choices, shuffle, randint
 from collections import Counter
-from utils import clearName
+from src.liga.utils import clearName
 
 
 class goles:
@@ -27,6 +27,7 @@ class goles:
         jugador = []
         index = {}
         valuesList = []
+        asistencia = ""
         while j < 2:
             i = 0
             while i < n_goles[j][1]:
@@ -35,6 +36,7 @@ class goles:
                 index["nombre"] = ""
                 index["minuto"] = -1
                 index["Propia"] = ""
+                index["asistencia"] = ""
                 if d20 >= 18:
                     choice = choices(listado_gol_random[j], k=1)
                     if choice[0][0] == "Propia":
@@ -46,12 +48,15 @@ class goles:
                             index["Propia"] = "Propia"
                     else:
                         jugador = choices(listado_gol_random[j], k=1)[0]
+                        asistencia = choices(listado_ofensivos[j], k=1)[0]
                 else:
                     jugador = choices(listado_ofensivos[j], k=1)[0]
+                    asistencia = choices(listado_ofensivos[j], k=1)[0]
                 minuto = randint(jugador[2], jugador[3])
                 index["id_partido"] = id_partido
                 index["nombre"] = clearName(jugador[0])
                 index["minuto"] = minuto
+                index["asistencia"] = clearName(asistencia[0])
                 valuesList.append(index.copy())
                 i += 1
             j += 1
